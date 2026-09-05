@@ -2,7 +2,7 @@ package user.service.menu;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import user.service.user.User;
+import user.service.entity.User;
 import user.service.user.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
