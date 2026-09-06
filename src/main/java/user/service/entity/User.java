@@ -1,7 +1,6 @@
 package user.service.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 public class User {
 
     @Id
-    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -27,6 +25,11 @@ public class User {
     @Column(nullable = false, name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
     // Конструктор
     public User() {
 
@@ -36,7 +39,6 @@ public class User {
         this.name = name;
         this.email = email;
         this.age = age;
-        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
