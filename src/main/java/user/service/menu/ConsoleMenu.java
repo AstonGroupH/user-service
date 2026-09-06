@@ -1,6 +1,6 @@
 package user.service.menu;
 
-import user.service.user.User;
+import user.service.entity.User;
 import user.service.user.UserService;
 import user.service.logging.AppLogger;
 import java.util.Scanner;
