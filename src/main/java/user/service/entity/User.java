@@ -1,18 +1,41 @@
-package user.service.user;
+package user.service.entity;
+
+import jakarta.persistence.*;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-// Временный клас "заглушка".
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @Column(unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 50)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
+
+    @Column(nullable = false)
     private Integer age;
+
+    @Column(nullable = false, name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     // Конструктор
     public User() {
+
+    }
+
+    public User(String name, String email, Integer age) {
+        this.name = name;
+        this.email = email;
+        this.age = age;
         this.createdAt = LocalDateTime.now();
     }
 
