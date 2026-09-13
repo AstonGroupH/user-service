@@ -14,7 +14,7 @@
         </property>
 
         <property name="hibernate.connection.url">
-            jdbc:postgresql://localhost:5432/user_service
+            jdbc:postgresql://localhost:5432/Market
         </property>
         <!--Postres для примера ЛОГИНА-->
         <property name="hibernate.connection.username">
@@ -22,7 +22,7 @@
         </property>
         <!--Postres для примера ПОРОЛЯ-->
         <property name="hibernate.connection.password">
-            postgres
+            23ReT56(3)
         </property>
 
         <!-- Hibernate -->
