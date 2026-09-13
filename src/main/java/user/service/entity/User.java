@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -30,9 +31,7 @@ public class User {
         createdAt = LocalDateTime.now();
     }
 
-    // Конструктор
     public User() {
-
     }
 
     public User(String name, String email, Integer age) {
@@ -81,7 +80,8 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public String toString() {
@@ -92,5 +92,23 @@ public class User {
                 ", age=" + age +
                 ", createdAt=" + createdAt.format(FORMATTER) +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof User user)) {
+            return false;
+        }
+
+        return id != null && Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
