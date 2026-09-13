@@ -7,31 +7,20 @@ import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import user.service.entity.User;
 
-@Testcontainers
 public abstract class AbstractIntegrationTest {
-
-    @Container
-    protected static final PostgreSQLContainer<?> POSTGRES =
-            new PostgreSQLContainer<>("postgres:16-alpine")
-                    .withDatabaseName("user_service_test")
-                    .withUsername("test")
-                    .withPassword("test");
 
     protected static SessionFactory sessionFactory;
 
     @BeforeAll
     static void initSessionFactory() {
         Configuration config = new Configuration()
-                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
-                .setProperty("hibernate.connection.url", POSTGRES.getJdbcUrl())
-                .setProperty("hibernate.connection.username", POSTGRES.getUsername())
-                .setProperty("hibernate.connection.password", POSTGRES.getPassword())
-                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
+                .setProperty("hibernate.connection.driver_class", "org.h2.Driver")
+                .setProperty("hibernate.connection.url", "jdbc:h2:mem:user_service_test;DB_CLOSE_DELAY=-1")
+                .setProperty("hibernate.connection.username", "sa")
+                .setProperty("hibernate.connection.password", "")
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect")
                 .setProperty("hibernate.hbm2ddl.auto", "create-drop")
                 .setProperty("hibernate.show_sql", "true")
                 .setProperty("hibernate.format_sql", "true")
