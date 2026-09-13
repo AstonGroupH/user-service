@@ -4,11 +4,17 @@ import user.service.dao.UserDaoImpl;
 import user.service.entity.User;
 import user.service.user.UserService;
 import user.service.logging.AppLogger;
+import user.service.util.HibernateUtil;
+
 import java.util.Scanner;
 
 public class ConsoleMenu {
     private final Scanner scanner = new Scanner(System.in);
-        private final UserService userService = new UserService(new UserDaoImpl());
+        private final UserService userService = new UserService(
+                new UserDaoImpl(
+                        HibernateUtil.getSessionFactory()
+                )
+        );
 
     public void start() {
         AppLogger.LOG.info("Запуск консольного интерфейса user-service...");

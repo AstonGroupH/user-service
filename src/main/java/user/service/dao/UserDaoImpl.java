@@ -1,20 +1,26 @@
 package user.service.dao;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import user.service.entity.User;
 import user.service.logging.AppLogger;
-import user.service.util.HibernateUtil;
 
 import java.util.List;
 
 public class UserDaoImpl implements UserDao {
 
+    private final SessionFactory sessionFactory;
+
+    public UserDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     @Override
     public void save(User user) {
         Transaction transaction = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
 
@@ -26,9 +32,15 @@ public class UserDaoImpl implements UserDao {
 
         } catch (Exception ex) {
 
-            if (transaction != null &&
-                    transaction.getStatus().canRollback()) {
-                transaction.rollback();
+            if (transaction != null) {
+                try {
+                    transaction.rollback();
+                } catch (Exception rollbackEx) {
+                    AppLogger.LOG.error(
+                            "Ошибка отката транзакции",
+                            rollbackEx
+                    );
+                }
             }
 
             AppLogger.LOG.error(
@@ -48,7 +60,7 @@ public class UserDaoImpl implements UserDao {
     public User findById(Long id) {
         Transaction transaction = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
 
@@ -60,13 +72,19 @@ public class UserDaoImpl implements UserDao {
 
         } catch (Exception ex) {
 
-            if (transaction != null &&
-                    transaction.getStatus().canRollback()) {
-                transaction.rollback();
+            if (transaction != null) {
+                try {
+                    transaction.rollback();
+                } catch (Exception rollbackEx) {
+                    AppLogger.LOG.error(
+                            "Ошибка отката транзакции",
+                            rollbackEx
+                    );
+                }
             }
 
             AppLogger.LOG.error(
-                    "Не удалось найти пользователя с id: {}",
+                    "Не удалось найти пользователя с id={}",
                     id,
                     ex
             );
@@ -82,7 +100,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> findAll() {
         Transaction transaction = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
 
@@ -96,9 +114,15 @@ public class UserDaoImpl implements UserDao {
 
         } catch (Exception ex) {
 
-            if (transaction != null &&
-                    transaction.getStatus().canRollback()) {
-                transaction.rollback();
+            if (transaction != null) {
+                try {
+                    transaction.rollback();
+                } catch (Exception rollbackEx) {
+                    AppLogger.LOG.error(
+                            "Ошибка отката транзакции",
+                            rollbackEx
+                    );
+                }
             }
 
             AppLogger.LOG.error(
@@ -117,7 +141,7 @@ public class UserDaoImpl implements UserDao {
     public void update(User user) {
         Transaction transaction = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
 
@@ -125,13 +149,22 @@ public class UserDaoImpl implements UserDao {
 
             transaction.commit();
 
-            AppLogger.LOG.info("Обновлён пользователь: {}", user);
+            AppLogger.LOG.info(
+                    "Обновлён пользователь: {}",
+                    user
+            );
 
         } catch (Exception ex) {
 
-            if (transaction != null &&
-                    transaction.getStatus().canRollback()) {
-                transaction.rollback();
+            if (transaction != null) {
+                try {
+                    transaction.rollback();
+                } catch (Exception rollbackEx) {
+                    AppLogger.LOG.error(
+                            "Ошибка отката транзакции",
+                            rollbackEx
+                    );
+                }
             }
 
             AppLogger.LOG.error(
@@ -151,7 +184,7 @@ public class UserDaoImpl implements UserDao {
     public void delete(Long id) {
         Transaction transaction = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
 
             transaction = session.beginTransaction();
 
@@ -159,6 +192,7 @@ public class UserDaoImpl implements UserDao {
 
             if (user != null) {
                 session.remove(user);
+
                 AppLogger.LOG.info(
                         "Удалён пользователь с ID={}",
                         id
@@ -174,9 +208,15 @@ public class UserDaoImpl implements UserDao {
 
         } catch (Exception ex) {
 
-            if (transaction != null &&
-                    transaction.getStatus().canRollback()) {
-                transaction.rollback();
+            if (transaction != null) {
+                try {
+                    transaction.rollback();
+                } catch (Exception rollbackEx) {
+                    AppLogger.LOG.error(
+                            "Ошибка отката транзакции",
+                            rollbackEx
+                    );
+                }
             }
 
             AppLogger.LOG.error(
