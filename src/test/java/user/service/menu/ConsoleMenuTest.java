@@ -2,43 +2,64 @@ package user.service.menu;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import user.service.dao.UserDao;
 import user.service.dao.UserDaoImpl;
 import user.service.entity.User;
+import user.service.testconfig.AbstractIntegrationTest;
 import user.service.user.UserService;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ConsoleMenuTest {
+class ConsoleMenuTest extends AbstractIntegrationTest {
 
     private UserService service;
-    private User user;
 
     @BeforeEach
     void setUp() {
-        service = new UserService(new UserDaoImpl());
-        user = new User();
-        user.setName("Тест");
-        user.setEmail("test@example.com");
-        user.setAge(25);
+        UserDao userDao = new UserDaoImpl(sessionFactory);
+        service = new UserService(userDao);
     }
 
     @Test
     void shouldAssignIdWhenSavingUser() {
-        service.save(user);
+        User user = new User(
+                "Тест",
+                "test@example.com",
+                25
+        );
 
+
+        service.save(user);
         assertThat(user.getId()).isNotNull().isGreaterThan(0);
-        assertThat(service.findById(user.getId())).isSameAs(user);
+        User found = service.findById(user.getId());
+        assertThat(found).isNotNull();
+        assertThat(found.getId()).isEqualTo(user.getId());
+        assertThat(found.getName()).isEqualTo(user.getName());
+        assertThat(found.getEmail()).isEqualTo(user.getEmail());
+        assertThat(found.getAge()).isEqualTo(user.getAge());
     }
 
     @Test
     void shouldFindUserById() {
+        User user = new User(
+                "Тест",
+                "test@example.com",
+                25
+        );
+
         service.save(user);
+
         Long id = user.getId();
 
         User found = service.findById(id);
 
         assertThat(found).isNotNull();
+        assertThat(found.getId()).isEqualTo(id);
         assertThat(found.getName()).isEqualTo("Тест");
+        assertThat(found.getEmail()).isEqualTo("test@example.com");
+        assertThat(found.getAge()).isEqualTo(25);
     }
 
     @Test
@@ -50,37 +71,71 @@ class ConsoleMenuTest {
 
     @Test
     void shouldUpdateUserFields() {
+        User user = new User(
+                "Тест",
+                "test@example.com",
+                25
+        );
+
         service.save(user);
+
         user.setName("Обновлённый");
         user.setAge(30);
 
         service.update(user);
+
         User updated = service.findById(user.getId());
 
+        assertThat(updated).isNotNull();
         assertThat(updated.getName()).isEqualTo("Обновлённый");
         assertThat(updated.getAge()).isEqualTo(30);
     }
 
     @Test
     void shouldRemoveUserById() {
+        User user = new User(
+                "Тест",
+                "test@example.com",
+                25
+        );
+
         service.save(user);
+
         Long id = user.getId();
 
         service.delete(id);
 
-        assertThat(service.findById(id)).isNull();
+        User found = service.findById(id);
+
+        assertThat(found).isNull();
     }
 
     @Test
-    void shouldReturnCopyOfUsersList() {
-        service.save(user);
+    void shouldFindAllUsers() {
 
-        var list1 = service.findAll();
-        service.save(new User());
+        User user1 = new User(
+                "Тест",
+                "test@example.com",
+                25
+        );
 
-        var list2 = service.findAll();
+        User user2 = new User(
+                "Другой",
+                "another@example.com",
+                40
+        );
 
-        assertThat(list1).hasSize(1);
-        assertThat(list2).hasSize(2);
+        service.save(user1);
+        service.save(user2);
+
+        List<User> users = service.findAll();
+
+        assertThat(users).hasSize(2);
+        assertThat(users)
+                .extracting(User::getName)
+                .containsExactlyInAnyOrder(
+                        "Тест",
+                        "Другой"
+                );
     }
 }
