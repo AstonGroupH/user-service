@@ -90,8 +90,9 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
-                ", createdAt=" + createdAt.format(FORMATTER) +
-                '}';
+                ", createdAt=" +
+                (createdAt != null ? createdAt.format(FORMATTER) : null) +
+                "}";
     }
 
     @Override
