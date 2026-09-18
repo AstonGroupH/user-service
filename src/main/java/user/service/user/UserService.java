@@ -1,35 +1,43 @@
 package user.service.user;
 
-import user.service.dao.UserDao;
+import org.springframework.stereotype.Service;
 import user.service.entity.User;
+import user.service.repository.UserRepository;
 
 import java.util.List;
 
+@Service
 public class UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public void save(User user) {
-        userDao.save(user);
+    public User save(User user) {
+        userRepository.save(user);
+        return user;
     }
 
-    public User findById(Long id) {
-        return userDao.findById(id);
+    public User update(User user) {
+        userRepository.save(user);
+        return user;
     }
 
     public List<User> findAll() {
-        return userDao.findAll();
+        return userRepository.findAll();
     }
 
-    public void update(User user) {
-        userDao.update(user);
+    public User findById(Long id) {
+        return  userRepository.findById(id)
+                .orElseThrow(
+                        () -> new UserNotFoundException(id)
+                );
     }
 
     public void delete(Long id) {
-        userDao.delete(id);
+        userRepository.deleteById(id);
     }
+
 }
