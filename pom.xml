@@ -58,13 +58,6 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <!-- JUnit 5 -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.12.2</version>
-        </dependency>
-
         <!-- AssertJ (удобные проверки) -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -102,10 +95,17 @@
         </dependency>
 
         <!-- H2 для тестов -->
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <version>2.3.232</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
     </dependencies>
