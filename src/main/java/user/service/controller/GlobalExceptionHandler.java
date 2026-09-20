@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import user.service.user.UserNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,5 +29,15 @@ public class GlobalExceptionHandler {
             errors.put(fe.getField(), fe.getDefaultMessage());
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex) {
+
+        Map<String, String> body = new HashMap<>();
+        body.put("Ошибка", "Email уже существует");
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 }
